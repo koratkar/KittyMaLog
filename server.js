@@ -12,7 +12,8 @@ app.set('view engine', 'ejs')
 
 app.get('/', (req, res) => {
     let data = {
-        feeds: feeds
+        feeds: feeds,
+        todaysDate: dates.today()
     }
     res.render('log', data)
 })
@@ -22,8 +23,13 @@ app.post('/', (req, res) => {
     if (req.body.fedButton == "+") {
         let timeFed = dates.now()
         feeds.unshift(timeFed)
-        res.redirect('/')
+        if (feeds.length == 11) {
+            feeds.pop()
+        }
 
+
+        res.redirect('/')
+        
 
     }  else if (req.body.removeLastFeed == "-") {
         feeds.shift()

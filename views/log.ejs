@@ -6,9 +6,10 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <title>Meow Meow Tai's Food Log</title>
 </head>
-<body style="margin-left: 20px; margin-top: 10px;">
+<body style="margin-left: 20px; margin-top: 10px; background-color:black;">
     <center>
-        <h1>Kitty Ma Feedings:</h1>
+        <h1 style="color: white;">Kitty Ma Feedings:</h1>
+        <h1 style="color: darkslategrey"><%=todaysDate%></h1>
         
         <!--Button to log feed-->
         <form method="post">
@@ -20,7 +21,7 @@
     <ul class='list-group' style="margin-right: 20px"> 
         <% for(var i = 0; i < feeds.length; i++) { %>
             <% if (i == 0) { %>
-                <li class='list-group-item active'>fed at <b><%=feeds[i]%> </b></li>   
+                <li class='list-group-item active'><i>fed at <%=feeds[i]%> </i></li>   
             <% } else { %>
                 <li class='list-group-item'>fed at <b><%=feeds[i]%> </b></li>   
             <% } %>
