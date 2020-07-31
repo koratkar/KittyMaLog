@@ -1,3 +1,5 @@
+//jshint esversion:6, asi: true
+
 exports.now = function() {
     let dateObject = new Date()
     let options = {

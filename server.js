@@ -1,15 +1,21 @@
+//jshint esversion:6, asi: true
+
+//libraries and modules
 let express = require('express')
 let bodyParser = require('body-parser')
 let ejs = require('ejs')
-const { currentTime } = require('./dates')
 let dates = require(__dirname + '/dates.js')
-let app = express()
-let port = 80
-var feeds = []
+let mongoose = require('mongoose')
 
+let app = express()
 app.use(bodyParser.urlencoded({extended: true}))
 app.set('view engine', 'ejs')
 
+//core variables
+let port = 80
+var feeds = []
+
+//gets and posts
 app.get('/', (req, res) => {
     let data = {
         feeds: feeds,
