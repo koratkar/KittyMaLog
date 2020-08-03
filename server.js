@@ -4,21 +4,61 @@
 let express = require('express')
 let bodyParser = require('body-parser')
 let ejs = require('ejs')
-let dates = require(__dirname + '/dates.js')
 let mongoose = require('mongoose')
-
 let app = express()
+
+let dates = require(__dirname + '/dates.js')
+
 app.use(bodyParser.urlencoded({extended: true}))
 app.set('view engine', 'ejs')
 
-//core variables
 let port = 80
-var feeds = []
+let mongooseURL = "mongodb://localhost:27017/meowDB"
+
+mongoose.connect(mongooseURL, {useNewUrlParser: true, useUnifiedTopology: true})
+
+//mongoose stuff
+let logSchema = {
+    log: String
+}
+
+let Feed = mongoose.model("Feed", logSchema)
+
+function saveFeeds() {
+    let newFeedLog = new Feed({
+        log: dates.now()
+    })
+    let array = [newFeedLog]
+
+    Feed.insertMany(array, function(err) {
+        if (err) { console.log(err)} else {
+            console.log('added your items to MeowDB')
+        }
+    })
+}
+
+function deleteLastFeed() {
+   //find out how to make this cat work
+    // Feed.deleteOne()
+}
+
+function retrieveFeedLog() {
+    Feed.find(Feed.log, function(err) {
+        if (err) { console.log(err)} else {
+            console.log('added your items to MeowDB')
+        }
+    })
+}
+
+function deleteNewestFeed() {
+    "ok"
+}
+
 
 //gets and posts
 app.get('/', (req, res) => {
     let data = {
-        feeds: feeds,
+        feeds: retrieveFeedLog(),
         todaysDate: dates.today()
     }
     res.render('log', data)
@@ -27,10 +67,11 @@ app.get('/', (req, res) => {
 app.post('/', (req, res) => {
     
     if (req.body.fedButton == "+") {
-        let timeFed = dates.now()
-        feeds.unshift(timeFed)
+        saveFeeds()
+        
+        //if statement to keep length under ten
         if (feeds.length == 11) {
-            feeds.pop()
+            deleteLastFeed()
         }
 
 
@@ -38,7 +79,7 @@ app.post('/', (req, res) => {
         
 
     }  else if (req.body.removeLastFeed == "-") {
-        feeds.shift()
+        deleteNewestFeed()
         res.redirect('/')
     }
 
