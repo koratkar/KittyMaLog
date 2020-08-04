@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.set('view engine', 'ejs')
 
 let port = 80
-let mongooseURL = "mongodb://localhost:27017/meowDB"
+let mongooseURL = "mongodb://localhost:27017/local"
 
 mongoose.connect(mongooseURL, {useNewUrlParser: true, useUnifiedTopology: true})
 
