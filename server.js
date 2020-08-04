@@ -42,26 +42,40 @@ function deleteLastFeed() {
     // Feed.deleteOne()
 }
 
-function retrieveFeedLog() {
-    Feed.find(Feed.log, function(err) {
-        if (err) { console.log(err)} else {
-            console.log('added your items to MeowDB')
-        }
-    })
-}
 
 function deleteNewestFeed() {
     "ok"
 }
 
+function getFeedLog() {
+    Feed.find( (err, logs) => {
+        if (err) {
+            console.log(err)
+            jango = []
+        } else {
+            var feedLogArr = []
+            logs.forEach(logs => feedLogArr.unshift(logs.log))
+            return feedLogArr
+        }
+    })
+}
 
 //gets and posts
 app.get('/', (req, res) => {
+        
     let data = {
-        feeds: retrieveFeedLog(),
         todaysDate: dates.today()
     }
-    res.render('log', data)
+
+    Feed.find( (err, logs) => {
+            if (err) {
+                console.log(err)
+            } else {
+                var feedLogArr = []
+                logs.forEach(logs => feedLogArr.unshift(logs.log))
+                res.render('log', {feeds: feedLogArr, todaysDate: dates.today()})
+            }
+    })
 })
 
 app.post('/', (req, res) => {
@@ -69,10 +83,9 @@ app.post('/', (req, res) => {
     if (req.body.fedButton == "+") {
         saveFeeds()
         
-        //if statement to keep length under ten
-        if (feeds.length == 11) {
-            deleteLastFeed()
-        }
+        // if (feedLogArray.length >= 11) {
+
+        // }
 
 
         res.redirect('/')
