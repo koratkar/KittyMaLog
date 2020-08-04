@@ -32,50 +32,52 @@ function saveFeeds() {
 
     Feed.insertMany(array, function(err) {
         if (err) { console.log(err)} else {
-            console.log('added your items to MeowDB')
+            console.log('added your items to meowDB')
         }
     })
 }
 
 function deleteLastFeed() {
-   //find out how to make this cat work
-    // Feed.deleteOne()
+    //deletes the last feed in teh array
+       Feed.deleteOne({}, (err) => {
+           if (err) {
+               console.log(err)
+           } else {
+               console.log("deleted newest one")
+           }
+       })
 }
 
 
 function deleteNewestFeed() {
-    "ok"
-}
 
-function getFeedLog() {
-    Feed.find( (err, logs) => {
-        if (err) {
-            console.log(err)
-            jango = []
-        } else {
-            var feedLogArr = []
-            logs.forEach(logs => feedLogArr.unshift(logs.log))
-            return feedLogArr
-        }
+    Feed.find((err, logs) => {
+        var idArr = []
+        logs.forEach((logs, i) => {
+            idArr.unshift(logs._id)
+        })
+        Feed.deleteOne({_id: idArr[0]}, (err) => {if (err != true){console.log("deleted newest feed")}})
     })
 }
+
 
 //gets and posts
 app.get('/', (req, res) => {
-        
-    let data = {
-        todaysDate: dates.today()
-    }
 
-    Feed.find( (err, logs) => {
-            if (err) {
-                console.log(err)
-            } else {
-                var feedLogArr = []
-                logs.forEach(logs => feedLogArr.unshift(logs.log))
-                res.render('log', {feeds: feedLogArr, todaysDate: dates.today()})
-            }
+    Feed.find((err, logs) => {
+        if (err) {
+            console.log(err)
+        } else {
+
+        let data = {
+            todaysDate: dates.today(),
+            logs: logs.reverse()
+        }
+        
+        res.render('log', data)
+        }
     })
+    
 })
 
 app.post('/', (req, res) => {
@@ -83,9 +85,14 @@ app.post('/', (req, res) => {
     if (req.body.fedButton == "+") {
         saveFeeds()
         
-        // if (feedLogArray.length >= 11) {
+       Feed.find((err, logs) => {
+            var countArr = []
+            logs.forEach(logs => countArr.push(logs.log))
+            if (countArr.length >= 11) {
+                deleteLastFeed()
+            }
 
-        // }
+        })
 
 
         res.redirect('/')
